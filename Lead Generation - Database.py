@@ -5,6 +5,20 @@ import glob #Excel Reader
 import re #Regex
 import time #Fancy shit
 from openpyxl import load_workbook
+from tkinter import scrolledtext
+from tkinter import messagebox
+from tkinter import ttk
+from tkinter import filedialog
+from tkinter.ttk import Progressbar
+from tkinter.ttk import *
+from os import path
+
+#TODO: Create an Interface
+#window = Tk()
+
+#window.title("GUI Project")
+#window.geometry('525x300')
+#window.mainloop()
 
 
 print("The following Appeals have been treated:")
