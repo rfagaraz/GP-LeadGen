@@ -42,7 +42,7 @@ for files in glob.glob(hubspotExtractionDirectory+'/*.xlsx'):            #Loop f
 time.sleep(10)
 #TODO: Point the template directory using an integrated User Interface
 messagebox.showinfo('Warning',"Please select your Template file")
-templateBook = filedialog.askopenfilenames(filetypes = (("xlsx files", "*.xlsx"), ("all files", "*.*")))
+templateBook = filedialog.askopenfilename(filetypes = (("Excel file", "*.xlsx"), ("all files", "*.*")))
 book = load_workbook(templateBook)
 writer = pd.ExcelWriter(templateBook, engine='openpyxl') #This path leads to the template file where the dataframe should be pasted
 writer.book = book
