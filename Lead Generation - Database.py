@@ -1,5 +1,6 @@
+#!python3
 
-from tkinter import *
+from tkinter import *                            #User Interface Module
 from tkinter import scrolledtext
 from tkinter import messagebox
 from tkinter import messagebox
@@ -7,6 +8,14 @@ from tkinter import ttk
 from tkinter import filedialog
 from tkinter.ttk import Progressbar
 from tkinter.ttk import *
+from openpyxl import load_workbook                                
+from os import path
+import pandas as pd                              #Analysis Mainframe 
+import numpy as np                               #Complementary 
+import glob                                      #Excel Reader
+import re                                        #Regex
+import time                                      #Adding stops to manually keep track of the processing steps
+
 
 
 #Create an Interface:
@@ -18,13 +27,7 @@ txt.grid(column=0, row=0)
 
 txt.insert(INSERT, "Importing Modules\n")
 
-import pandas as pd #Main Analysis 
-import numpy as np #Complementary 
-import glob #Excel Reader
-import re #Regex
-import time #Fancy shit
-from openpyxl import load_workbook                                
-from os import path
+
 
 txt.insert(INSERT, "The following Appeals have been treated:\n")
 time.sleep(4)
@@ -33,8 +36,8 @@ messagebox.showinfo('Warning', 'Please select the folder containing all Hubspot 
 
 hubspotExtractionDirectory = filedialog.askdirectory()
 
-for files in glob.glob(hubspotExtractionDirectory+'/*.xlsx'):            #Loop for every hubspot list in the same directory as the script
-       appealCampaign = re.search("(?!extracao-)\w+(?=-novos)", files)      #Regex to pull name of the list as "Appeal"
+for files in glob.glob(hubspotExtractionDirectory+'/*.xlsx'):                              #Loop for every hubspot list in the same directory as the script
+       appealCampaign = re.search("(?!extracao-)\w+(?=-novos)", files)                     #Regex to pull name of the list as "Appeal"
        time.sleep(1)
        df = pd.read_excel(files).assign(Appeal=appealCampaign.group())
        all_data = all_data.append(df, ignore_index=False) 
