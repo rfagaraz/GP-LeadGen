@@ -1,3 +1,4 @@
+
 from tkinter import *
 from tkinter import scrolledtext
 from tkinter import messagebox
@@ -29,17 +30,16 @@ txt.insert(INSERT, "The following Appeals have been treated:\n")
 time.sleep(4)
 all_data = pd.DataFrame()     #We're gonna use a Dataframe to mess with the docs. 
 messagebox.showinfo('Warning', 'Please select the folder containing all Hubspot files extracted')
+
 hubspotExtractionDirectory = filedialog.askdirectory()
 
 for files in glob.glob(hubspotExtractionDirectory+'/*.xlsx'):            #Loop for every hubspot list in the same directory as the script
-   appealCampaign = re.search("(?!extracao-)\w+(?=-novos)", files)      #Regex to pull name of the list as "Appeal"
-   txt.insert(INSERT,(appealCampaign.group())+'\n')
-   time.sleep(1)
-   df = pd.read_excel(files).assign(Appeal=appealCampaign.group())
-   all_data = all_data.append(df, ignore_index=False)              #Concatenate all files in the loop
-   txt.insert(INSERT, "All files have been concatenated. Accessing template sheet...\n")
+       appealCampaign = re.search("(?!extracao-)\w+(?=-novos)", files)      #Regex to pull name of the list as "Appeal"
+       time.sleep(1)
+       df = pd.read_excel(files).assign(Appeal=appealCampaign.group())
+       all_data = all_data.append(df, ignore_index=False) 
 
-time.sleep(10)
+time.sleep(1)
 #TODO: Point the template directory using an integrated User Interface
 messagebox.showinfo('Warning',"Please select your Template file")
 templateBook = filedialog.askopenfilename(filetypes = (("Excel file", "*.xlsx"), ("all files", "*.*")))
