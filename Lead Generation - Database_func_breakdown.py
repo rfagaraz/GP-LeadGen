@@ -17,18 +17,21 @@ from os import path
 
 all_data = pd.DataFrame()     #We're gonna use a Dataframe to mess with the docs. 
 
-hubspotExtractionDirectory = filedialog.askdirectory()
+#hubspotDirectory = filedialog.askdirectory()
 
-for files in glob.glob(hubspotExtractionDirectory+'/*.xlsx'):            #Loop for every hubspot list in the same directory as the script
-       appealCampaign = re.search("(?!extracao-)\w+(?=-novos)", files)      #Regex to pull name of the list as "Appeal"
-       df = pd.read_excel(files).assign(Appeal=appealCampaign.group())
-       all_data = all_data.append(df, ignore_index=False) 
+def appender(data):
+       
+       for files in glob.glob(filedialog.askdirectory()+'/*.xlsx'):                                #Loop for every hubspot list in the same directory as the script
+              appealCampaign = re.search("(?!extracao-)\w+(?=-novos)", files)      #Regex to pull name of the list as "Appeal"
+              df = pd.read_excel(files).assign(Appeal=appealCampaign.group())
+              data = data.append(df, ignore_index=False)
+       return data
 
+#appender(hubspotDirectory, all_data)
 
-#TODO: Point the template directory using an integrated User Interface
 templateBook = filedialog.askopenfilename(filetypes = (("Excel file", "*.xlsx"), ("all files", "*.*")))
 book = load_workbook(templateBook)
-writer = pd.ExcelWriter(templateBook, engine='openpyxl') #This path leads to the template file where the dataframe should be pasted
+writer = pd.ExcelWriter(templateBook, engine='openpyxl')                                                 #This path leads to the template file where the dataframe should be pasted
 writer.book = book
 writer.sheets = dict((ws.title, ws) for ws in book.worksheets)
 
@@ -41,7 +44,7 @@ def regex(x):
 
 def dropRegex(x):
        print("droppando")
-       x = x.drop(x[x['Phone Mask'].map(len) < 11].index)
+       x = x.drop(x[x['Phone Mask'].map(len) < 11 ].index)
        print("finalizado")
        return x
 
@@ -53,8 +56,20 @@ def saveFile (x):
        return x
        print('Finalizado')
 
+def run():
+       run = saveFile(dropRegex(regex(appender(all_data))))
+       run
 
 
+######################### - USER INTERFACE  - ##########################
 
-#dropRegex(regex(all_data))
-saveFile(dropRegex(regex(all_data)))
+window = Tk()
+window.title("GUI Project")
+window.geometry('525x300')
+btn = Button(window, text="RUN", command=run)
+btn.grid(column=2, row=0)
+
+
+window.mainloop()
+
+########################################################################
