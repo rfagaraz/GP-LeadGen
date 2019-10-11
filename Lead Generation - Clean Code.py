@@ -1,32 +1,30 @@
 #!python 3
+import pandas as pd 
+import numpy as np 
 from tkinter import *
 from tkinter import scrolledtext, messagebox, ttk, filedialog
 from tkinter.ttk import Progressbar
 from openpyxl import load_workbook 
-import pandas as pd 
-import numpy as np 
-import glob          
+from src.funAppender import appender
+#from src.funExcelAccess import excelAccess
+#from src.funAppender import
+#from src.funAppender import         
 
 all_data = pd.DataFrame()  
-
-def appender(data):
-       
-       for files in glob.glob(filedialog.askdirectory()+'/*.xlsx'):                                #Loop for every hubspot list in the same directory as the script
-              appealCampaign = re.search("(?!extracao-)\w+(?=-novos)", files)      #Regex to pull name of the list as "Appeal"
-              df = pd.read_excel(files).assign(Appeal=appealCampaign.group())
-              data = data.append(df, ignore_index=False)
-       return data
-
+     
 def excelAccess():
        templateBook = filedialog.askopenfilename(filetypes = (("Excel file", "*.xlsx"), ("all files", "*.*")))
        global writer 
+       book = load_workbook(templateBook)
        writer = pd.ExcelWriter(templateBook, engine='openpyxl')
+       writer.book = book
+       writer.sheets = dict((ws.title, ws) for ws in book.worksheets)
        return writer
-       
+
 def regex(x):
        print('iniciando correções')
-       x.replace(to_replace ="^(\+55|55|055|\s\+55|\s55|\s055){0,1}?(\s|-|\.|\+|\_)?(0{0,1}\s{0,1})?([1-9][0-9]|\([1-9][0-9]\))(\s|-|\.|\+|\_){0,2}?((?!9999)\d{4,5}){0,1}?(\s|-|\.|\+|\_)?((?!0000)\d{4,5})$", value=r"\4-\6\8", regex=True, inplace=True)
-       x.filter(regex="^(\+55|55|055|\s\+55|\s55|\s055){0,1}?(\s|-|\.|\+|\_)?(0{0,1}\s{0,1})?([1-9][0-9]|\([1-9][0-9]\))(\s|-|\.|\+|\_){0,2}?(\d{4,5}){0,1}?(\s|-|\.|\+|\_)?((?!0000)\d{4,5})$", axis=1)
+       x.replace(to_replace ="^(\+55|55|055|\s\+55|\s55|\s055){0,1}?(\s|-|\.|\+|\_){0,2}?(0{0,1}\s{0,1})?([1-9][0-9]|\([1-9][0-9]\)){0,1}(\s|-|\.|\+|\_){0,2}?((?!9999)\d{4,5}){0,1}?(\s|-|\.|\+|\_)?((?!0000)\d{4,5})$", value=r"\4-\6\8", regex=True, inplace=True)
+       x.filter(regex="^(\+55|55|055|\s\+55|\s55|\s055){0,1}?(\s|-|\.|\+|\_){0,2}?(0{0,1}\s{0,1})?([1-9][0-9]|\([1-9][0-9]\)){0,1}(\s|-|\.|\+|\_){0,2}?(\d{4,5}){0,1}?(\s|-|\.|\+|\_)?((?!0000)\d{4,5})$", axis=1)
        print('correções finalizadas!')
        return x
 
