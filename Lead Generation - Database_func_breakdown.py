@@ -1,23 +1,13 @@
 #!python 3
-
 from tkinter import *
-from tkinter import scrolledtext
-from tkinter import messagebox
-from tkinter import ttk
-from tkinter import filedialog
+from tkinter import scrolledtext, messagebox, ttk, filedialog
 from tkinter.ttk import Progressbar
-from tkinter.ttk import *
-import pandas as pd #Main Analysis 
-import numpy as np #Complementary 
-import glob #Excel Reader
-import re #Regex
-import time #Fancy shit
-from openpyxl import load_workbook                                
-from os import path
+from openpyxl import load_workbook 
+import pandas as pd 
+import numpy as np 
+import glob          
 
-all_data = pd.DataFrame()     #We're gonna use a Dataframe to mess with the docs. 
-
-#hubspotDirectory = filedialog.askdirectory()
+all_data = pd.DataFrame()  
 
 def appender(data):
        
@@ -27,14 +17,12 @@ def appender(data):
               data = data.append(df, ignore_index=False)
        return data
 
-#appender(hubspotDirectory, all_data)
-
-templateBook = filedialog.askopenfilename(filetypes = (("Excel file", "*.xlsx"), ("all files", "*.*")))
-book = load_workbook(templateBook)
-writer = pd.ExcelWriter(templateBook, engine='openpyxl')                                                 #This path leads to the template file where the dataframe should be pasted
-writer.book = book
-writer.sheets = dict((ws.title, ws) for ws in book.worksheets)
-
+def excelAccess():
+       templateBook = filedialog.askopenfilename(filetypes = (("Excel file", "*.xlsx"), ("all files", "*.*")))
+       global writer 
+       writer = pd.ExcelWriter(templateBook, engine='openpyxl')
+       return writer
+       
 def regex(x):
        print('iniciando correções')
        x.replace(to_replace ="^(\+55|55|055|\s\+55|\s55|\s055){0,1}?(\s|-|\.|\+|\_)?(0{0,1}\s{0,1})?([1-9][0-9]|\([1-9][0-9]\))(\s|-|\.|\+|\_){0,2}?((?!9999)\d{4,5}){0,1}?(\s|-|\.|\+|\_)?((?!0000)\d{4,5})$", value=r"\4-\6\8", regex=True, inplace=True)
@@ -48,7 +36,6 @@ def dropRegex(x):
        print("finalizado")
        return x
 
-
 def saveFile (x):
        print('Salvando...')
        x = x.to_excel(writer, sheet_name='Base Original') #Excel folder which it'll be pasted on
@@ -59,16 +46,19 @@ def saveFile (x):
 def run():
        run = saveFile(dropRegex(regex(appender(all_data))))
        run
+       print('Successfully run!')
+
 
 
 ######################### - USER INTERFACE  - ##########################
 
 window = Tk()
 window.title("GUI Project")
-window.geometry('525x300')
-btn = Button(window, text="RUN", command=run)
-btn.grid(column=2, row=0)
-
+window.geometry('200x100')
+runButton = Button(window, text="Execute full script", command=run)
+runButton.grid(column=1, row=2)
+templateButton = Button(window, text="Select your template", command=excelAccess)
+templateButton.grid(column=1, row=1)
 
 window.mainloop()
 
