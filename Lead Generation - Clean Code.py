@@ -21,28 +21,28 @@ def excelAccess():
        writer.sheets = dict((ws.title, ws) for ws in book.worksheets)
        return writer
 
-def regex(x):
+def regex(yourDataFrame):
        print('iniciando correções')
-       x.replace(to_replace ="^(\+55|55|055|\s\+55|\s55|\s055){0,1}?(\s|-|\.|\+|\_){0,2}?(0{0,1}\s{0,1})?([1-9][0-9]|\([1-9][0-9]\)){0,1}(\s|-|\.|\+|\_){0,2}?((?!9999)\d{4,5}){0,1}?(\s|-|\.|\+|\_)?((?!0000)\d{4,5})$", value=r"\4-\6\8", regex=True, inplace=True)
-       x.filter(regex="^(\+55|55|055|\s\+55|\s55|\s055){0,1}?(\s|-|\.|\+|\_){0,2}?(0{0,1}\s{0,1})?([1-9][0-9]|\([1-9][0-9]\)){0,1}(\s|-|\.|\+|\_){0,2}?(\d{4,5}){0,1}?(\s|-|\.|\+|\_)?((?!0000)\d{4,5})$", axis=1)
+       yourDataFrame.replace(to_replace ="^(\+55|55|055|\s\+55|\s55|\s055){0,1}?(\s|-|\.|\+|\_){0,2}?(0{0,1}\s{0,1})?([1-9][0-9]|\([1-9][0-9]\)){0,1}(\s|-|\.|\+|\_){0,2}?((?!9999)\d{4,5}){0,1}?(\s|-|\.|\+|\_)?((?!0000)\d{4,5})$", value=r"\4-\6\8", regex=True, inplace=True)
+       yourDataFrame.filter(regex="^(\+55|55|055|\s\+55|\s55|\s055){0,1}?(\s|-|\.|\+|\_){0,2}?(0{0,1}\s{0,1})?([1-9][0-9]|\([1-9][0-9]\)){0,1}(\s|-|\.|\+|\_){0,2}?(\d{4,5}){0,1}?(\s|-|\.|\+|\_)?((?!0000)\d{4,5})$", axis=1)
        print('correções finalizadas!')
-       return x
+       return yourDataFrame
 
-def dropRegex(x):
+def dropRegex(yourDataFrame, size):
        print("droppando")
-       x = x.drop(x[x['Phone Mask'].map(len) < 11 ].index)
+       yourDataFrame = yourDataFrame.drop(yourDataFrame[yourDataFrame['Phone Mask'].map(len) < size ].index)
        print("finalizado")
-       return x
+       return yourDataFrame
 
-def saveFile (x):
+def saveFile (yourDataFrame):
        print('Salvando...')
-       x = x.to_excel(writer, sheet_name='Base Original') #Excel folder which it'll be pasted on
+       yourDataFrame = yourDataFrame.to_excel(writer, sheet_name='Base Original') #Excel folder which it'll be pasted on
        writer.save()
-       return x
+       return yourDataFrame
        print('Finalizado')
 
 def run():
-       run = saveFile(dropRegex(regex(appender(all_data))))
+       run = saveFile(dropRegex(regex(appender(all_data)), 11))
        run
        print('Successfully run!')
 
