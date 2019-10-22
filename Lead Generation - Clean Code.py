@@ -6,9 +6,6 @@ from tkinter import scrolledtext, messagebox, ttk, filedialog
 from tkinter.ttk import Progressbar
 from openpyxl import load_workbook 
 from src.funAppender import appender
-#from src.funExcelAccess import excelAccess
-#from src.funAppender import
-#from src.funAppender import         
 
 all_data = pd.DataFrame()  
      
@@ -28,9 +25,9 @@ def regex(yourDataFrame):
        print('correções finalizadas!')
        return yourDataFrame
 
-def dropRegex(yourDataFrame, size):
+def dropRegex(yourDataFrame, length):
        print("droppando")
-       yourDataFrame = yourDataFrame.drop(yourDataFrame[yourDataFrame['Phone Mask'].map(len) < size ].index)
+       yourDataFrame = yourDataFrame.drop(yourDataFrame[yourDataFrame['Phone Mask'].map(len) < length ].index)
        print("finalizado")
        return yourDataFrame
 
@@ -51,12 +48,14 @@ def run():
 ######################### - USER INTERFACE  - ##########################
 
 window = Tk()
-window.title("GUI Project")
-window.geometry('200x100')
-runButton = Button(window, text="Execute full script", command=run)
-runButton.grid(column=1, row=2)
+window.title("GPBR-DBM")
+window.geometry('180x150')
+desc = Label(window, text="Please select the template file\n and all files to be concatenated")
+desc.grid(column=0, row=0)
+runButton = Button(window, text="Run Script", command=run)
+runButton.grid(column=0, row=4)
 templateButton = Button(window, text="Select your template", command=excelAccess)
-templateButton.grid(column=1, row=1)
+templateButton.grid(column=0, row=3)
 
 window.mainloop()
 
