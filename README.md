@@ -1,4 +1,3 @@
-# friendly-chainsaw
 Python script repository.
 
 The script runs a sequence of simple functions in order to concatenate multiple *.xslx* files into one specific document.
